@@ -38,6 +38,7 @@ class CarItem(scrapy.Item):
     location = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     seller = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     seller_type = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
+    options = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     reserve = scrapy.Field(output_processor=TakeFirst())
     scraped_date = scrapy.Field(output_processor=TakeFirst())
 
