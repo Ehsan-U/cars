@@ -148,6 +148,6 @@ class BringaTrailer(scrapy.Spider):
 
             
 
-crawler = CrawlerProcess()
-crawler.crawl(BringaTrailer)
-crawler.start()
+# crawler = CrawlerProcess()
+# crawler.crawl(BringaTrailer)
+# crawler.start()
