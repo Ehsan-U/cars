@@ -51,6 +51,7 @@ class BringaTrailer(scrapy.Spider):
             seller=self.get_seller(response),
             seller_type=self.get_seller_type(response),
             options=self.get_options(response),
+            bids=self.get_bids(response),
             reserve=self.check_reserve(response),
             scraped_date=datetime.datetime.now().date().strftime("%m/%d/%Y"),
         )
@@ -121,6 +122,22 @@ class BringaTrailer(scrapy.Spider):
         return ", ".join(options)
 
     @staticmethod
+    def get_bids(response):
+        bids = []
+        rawdata = response.xpath("//script[@id='bat-theme-viewmodels-js-extra']/text()").get()
+        if rawdata:
+            data = json.loads(rawdata.split("VMS =")[-1].strip().replace('\n','').rstrip(';'))
+            for bid in data.get("comments", []):
+                bid_amount = bid.get("bidAmount", 0)
+                if bid_amount:
+                    bids.append({
+                        "bidder": bid.get("authorName"),
+                        "amount": f"{bid_amount}$",
+                        "timestamp": bid.get("timestamp")
+                    })
+        return bids
+
+    @staticmethod
     def get_value(response, key):
         mapping = {
             'Engine': 3,
@@ -147,7 +164,7 @@ class BringaTrailer(scrapy.Spider):
         return formatted_date_str
 
             
-
+#
 # crawler = CrawlerProcess()
 # crawler.crawl(BringaTrailer)
 # crawler.start()

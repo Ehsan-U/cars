@@ -4,7 +4,7 @@ from scrapy_playwright.page import PageMethod
 from scrapy.crawler import CrawlerProcess
 from cars.items import CarItem
 from scrapy.loader import ItemLoader
-
+import dateparser
 
 
 class CarsandBids(scrapy.Spider):
@@ -56,11 +56,22 @@ class CarsandBids(scrapy.Spider):
                 **self.playwright_args,
                 "playwright_page_methods": [
                     PageMethod("wait_for_selector", "//ul[@class='auctions-list past-auctions ']"),
+                    PageMethod("evaluate", "() => {window.scrollTo(0, document.body.scrollHeight);}"),
                 ]
             })
 
     async def parse_car(self, response):
         page = response.meta['playwright_page']
+        while True:
+            try:
+                await page.locator("//li[@class='load-more']/button").click()
+                await page.wait_for_selector("//li[@class='load-more']/button", timeout=3000)
+            except Exception:
+                break
+            else:
+                continue
+        content = await page.content()
+        response = scrapy.Selector(text=content)
         await page.close()
 
         loader = ItemLoader(item=CarItem())
@@ -85,6 +96,7 @@ class CarsandBids(scrapy.Spider):
             interior=self.get_value(response, 'Interior Color'),
             seller=self.get_value(response, 'Seller'),
             seller_type=self.get_value(response, 'Seller Type'),
+            bids=self.get_bids(response),
             reserve=self.check_reserve(response),
             scraped_date=datetime.datetime.now().date().strftime("%m/%d/%Y")
         )
@@ -128,6 +140,17 @@ class CarsandBids(scrapy.Spider):
         if no_reserve:
             return False
         return True
+
+    @staticmethod
+    def get_bids(response):
+        bids = []
+        for bid in response.xpath("//li[@class='bid']"):
+            bids.append({
+                "bidder": bid.xpath(".//div[@class='username']//div[@class='text']/a/text()").get(),
+                "amount": "".join(bid.xpath(".//dd/text()").getall()),
+                "timestamp": int(dateparser.parse(bid.xpath(".//div[@class='text']//span[@class='time']/@data-full").get()).timestamp())
+            })
+        return bids
 
     @staticmethod
     def get_value(response, key):
