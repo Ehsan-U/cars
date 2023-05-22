@@ -70,11 +70,6 @@ class Cars(scrapy.Spider):
         return year
 
     @staticmethod
-    def get_title(response):
-        model = response.xpath("//h1[@class='listing-title']/text()").get()
-        return model
-
-    @staticmethod
     def get_desc(response):
         desc = response.xpath("//div[@class='sellers-notes']/text()").get()
         return desc

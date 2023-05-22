@@ -50,7 +50,7 @@ class BringaTrailer(scrapy.Spider):
             interior=self.get_value(response, 'Interior Color'),
             seller=self.get_seller(response),
             seller_type=self.get_seller_type(response),
-            options=self.get_options(response),
+            # options=self.get_options(response),
             bids=self.get_bids(response),
             reserve=self.check_reserve(response),
             scraped_date=datetime.datetime.now().date().strftime("%m/%d/%Y"),

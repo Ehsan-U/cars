@@ -106,8 +106,8 @@ class CarsandBids(scrapy.Spider):
 
     @staticmethod
     def get_year(response):
-        title = response.xpath("//title/text()").re_first('\d{4}')
-        return title
+        year = response.xpath("//title/text()").re_first('\d{4}')
+        return year
 
     @staticmethod
     def get_description(response):
@@ -154,8 +154,7 @@ class CarsandBids(scrapy.Spider):
 
     @staticmethod
     def get_value(response, key):
-        value = response.xpath(
-            f"//div[@class='quick-facts']//dl//dt[contains(text(), '{key}')]/following-sibling::dd//text()").get()
+        value = response.xpath(f"//div[@class='quick-facts']//dl//dt[contains(text(), '{key}')]/following-sibling::dd//text()").get()
         return value
 
     async def close_context_on_error(self, failure):

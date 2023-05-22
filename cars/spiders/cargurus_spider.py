@@ -5,7 +5,7 @@ from cars.items import CarItem
 from scrapy.loader import ItemLoader
 
 
-class Cars(scrapy.Spider):
+class Cargurus(scrapy.Spider):
     name = 'cargurus_spider'
     allowed_domains = ['cargurus.com']
     base_url = "https://www.cargurus.com/Cars/searchResults.action?offset={}&maxResults=15"
@@ -74,6 +74,6 @@ class Cars(scrapy.Spider):
 
 
 # crawler = CrawlerProcess()
-# crawler.crawl(Cars)
+# crawler.crawl(Cargurus)
 # crawler.start()
 
