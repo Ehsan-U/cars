@@ -5,6 +5,7 @@ from scrapy.crawler import CrawlerProcess
 from cars.items import CarItem
 from scrapy.loader import ItemLoader
 import dateparser
+from w3lib.html import remove_tags
 
 
 class BringaTrailer(scrapy.Spider):
@@ -38,6 +39,7 @@ class BringaTrailer(scrapy.Spider):
             auction_end_date=self.get_end_date(response, self.convert_date_string),
             bid_count=self.get_bid_count(response),
             comment_count=self.get_comment_count(response),
+            comment_text=self.get_comment_text(response),
             engine=self.get_value(response, 'Engine'),
             drivetrain=self.get_value(response, 'Drivetrain'),
             mileage=self.get_value(response, 'Mileage'),
@@ -90,6 +92,20 @@ class BringaTrailer(scrapy.Spider):
     def get_comment_count(response):
         comment_count = response.xpath("//span[@class='comments_header_html']/span[@class='info-value']/text()").get()
         return comment_count
+
+    @staticmethod
+    def get_comment_text(response):
+        comments = []
+        rawdata = response.xpath("//script[@id='bat-theme-viewmodels-js-extra']/text()").get()
+        if rawdata:
+            data = json.loads(rawdata.split("VMS =")[-1].strip().replace('\n', '').rstrip(';'))
+            for comment in data.get("comments", []):
+                try:
+                    text = remove_tags(comment.get("markup"))
+                except Exception as e:
+                    text = comment.get("markup")
+                comments.append(text)
+        return comments
 
     @staticmethod
     def get_model(response):

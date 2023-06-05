@@ -84,6 +84,7 @@ class CarsandBids(scrapy.Spider):
             auction_end_date=self.get_end_date(response, self.convert_date_string),
             bid_count=self.get_bid_count(response),
             comment_count=self.get_comment_count(response),
+            comment_text=self.get_comment_text(response),
             engine=self.get_value(response, 'Engine'),
             drivetrain=self.get_value(response, 'Drivetrain'),
             mileage=self.get_value(response, 'Mileage'),
@@ -133,6 +134,14 @@ class CarsandBids(scrapy.Spider):
     def get_comment_count(response):
         comment_count = response.xpath("//li[@class='num-comments']/span[@class='value']/text()").get()
         return comment_count
+
+    @staticmethod
+    def get_comment_text(response):
+        comments = []
+        for comment in response.xpath("//li[@class='comment']"):
+            text = " ".join(comment.xpath(".//div[@class='message']//text()").getall())
+            comments.append(text)
+        return comments
 
     @staticmethod
     def check_reserve(response):

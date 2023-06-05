@@ -151,8 +151,8 @@ class AutoTrader(scrapy.Spider):
             return None
 
 #
-# crawler = CrawlerProcess(settings=dict(
-#     USER_AGENT="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
-# ))
-# crawler.crawl(AutoTrader)
-# crawler.start()
+crawler = CrawlerProcess(settings=dict(
+    USER_AGENT="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+))
+crawler.crawl(AutoTrader)
+crawler.start()

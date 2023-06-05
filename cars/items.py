@@ -8,23 +8,28 @@ import scrapy
 from itemloaders.processors import TakeFirst, MapCompose
 
 
-def clean(text: str):
-    if isinstance(text, str):
-        text = text.replace('\n', '')
-        text = text.strip()
-    return text
+def clean(obj: str):
+    result = ''
+    if isinstance(obj, str):
+        result = obj.replace('\n', ' ')
+        result = result.strip()
+    if isinstance(obj, list):
+        result = []
+        for i in obj:
+            result.append(i.replace('\n',' ').strip())
+    return result
 
 
 class CarItem(scrapy.Item):
 
     source = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     year = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
-    title = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     description = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     price = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     auction_end_date = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     bid_count = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     comment_count = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
+    comment_text = scrapy.Field(input_processor=MapCompose(clean))
     engine = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     drivetrain = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     mileage = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())

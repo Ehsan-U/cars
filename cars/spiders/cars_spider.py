@@ -25,14 +25,14 @@ class Cars(scrapy.Spider):
             data = json.loads(rawData)
             for car in data.get("vehicleArray"):
                 url = f"https://www.cars.com/vehicledetail/{car.get('listing_id')}/"
-                yield scrapy.Request(url, callback=self.parse_car)
+                yield scrapy.Request(url, callback=self.parse_car, meta={"proxy": 'http://ehsan:ehsan123123123_streaming-1@geo.iproyal.com:12321'})
 
             page_id = response.xpath("//li[@class='sds-pagination__item active']/text()").re_first('\d+')
             if not page_id in self.done:
                 self.page +=1
                 self.done.add(page_id)
                 url = self.base_url.format(self.page)
-                yield scrapy.Request(url, callback=self.parse)
+                yield scrapy.Request(url, callback=self.parse, meta={"proxy": 'http://ehsan:ehsan123123123_streaming-1@geo.iproyal.com:12321'})
 
     def parse_car(self, response):
         loader = ItemLoader(item=CarItem())
