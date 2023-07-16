@@ -11,11 +11,17 @@ class AutoTrader(scrapy.Spider):
     allowed_domains = ['autotrader.com']
     base_url = "https://www.autotrader.com/rest/searchresults/base?allListingType=all-cars&isNewSearch=false&sortBy=relevance&numRecords=25&firstRecord={}"
     page_no = 0
+    custom_settings = dict(
+        DOWNLOAD_HANDLERS={
+            "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+            "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+        }
+    )
 
 
     def start_requests(self):
         url = self.base_url.format(self.page_no)
-        yield scrapy.Request(url, callback=self.parse)
+        yield scrapy.Request(url, callback=self.parse, meta={"playwright": True})
 
 
     def parse(self, response, **kwargs):
@@ -23,10 +29,12 @@ class AutoTrader(scrapy.Spider):
         if data and not data.get("stackTrace"):
             for car in data.get("listings"):
                 url = f"https://www.autotrader.com/cars-for-sale/vehicledetails.xhtml?listingId={car.get('id')}"
-                yield scrapy.Request(url, callback=self.parse_car)
+                yield scrapy.Request(url, callback=self.parse_car, meta={"playwright": True})
+                break
             self.page_no +=1
             next_url = self.base_url.format(self.page_no * 25)
-            yield scrapy.Request(url=next_url, callback=self.parse)
+            yield scrapy.Request(url=next_url, callback=self.parse, meta={"playwright": True})
+
 
     def parse_car(self, response):
         raw_data = response.xpath("//div[@id='mountNode']/following-sibling::script[1]/text()").get()
@@ -144,15 +152,15 @@ class AutoTrader(scrapy.Spider):
     def get_data(response, load=None):
         try:
             if not load:
-                return response.json()
+                return json.loads(response.xpath("//pre/text()").get())
             else:
                 return json.loads(response.split("DATA__=")[-1])
         except json.decoder.JSONDecodeError:
             return None
 
 #
-crawler = CrawlerProcess(settings=dict(
-    USER_AGENT="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
-))
-crawler.crawl(AutoTrader)
-crawler.start()
+# crawler = CrawlerProcess(settings=dict(
+#    USER_AGENT="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+# ))
+# crawler.crawl(AutoTrader)
+# crawler.start()
