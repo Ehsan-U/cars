@@ -19,20 +19,20 @@ class Cars(scrapy.Spider):
         yield scrapy.Request(url, callback=self.parse)
 
     def parse(self, response, **kwargs):
-        rawData = response.xpath("//div[@class='sds-page-section listings-page ']/@data-site-activity").get()
+        rawData = response.xpath("//div[@class='sds-page-section listings-page']/@data-site-activity").get()
 
         if rawData:
             data = json.loads(rawData)
             for car in data.get("vehicleArray"):
                 url = f"https://www.cars.com/vehicledetail/{car.get('listing_id')}/"
-                yield scrapy.Request(url, callback=self.parse_car, meta={"proxy": 'http://ehsan:ehsan123123123_streaming-1@geo.iproyal.com:12321'})
+                yield scrapy.Request(url, callback=self.parse_car)
 
             page_id = response.xpath("//li[@class='sds-pagination__item active']/text()").re_first('\d+')
             if not page_id in self.done:
                 self.page +=1
                 self.done.add(page_id)
                 url = self.base_url.format(self.page)
-                yield scrapy.Request(url, callback=self.parse, meta={"proxy": 'http://ehsan:ehsan123123123_streaming-1@geo.iproyal.com:12321'})
+                yield scrapy.Request(url, callback=self.parse)
 
     def parse_car(self, response):
         loader = ItemLoader(item=CarItem())
@@ -125,7 +125,7 @@ class Cars(scrapy.Spider):
             return seller_type
 
 #
-# crawler = CrawlerProcess(settings)
+# crawler = CrawlerProcess()
 # crawler.crawl(Cars)
 # crawler.start()
 #

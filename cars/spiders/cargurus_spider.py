@@ -65,9 +65,11 @@ class Cargurus(scrapy.Spider):
     def get_value(response, key):
         if isinstance(key, tuple):
             if len(key) == 2:
-                value = response.get("listing").get(key[0]).get(key[1])
+                value = response.get("listing").get(key[0], {}).get(key[1])
             elif len(key) == 3:
-                value = " ".join(response.get("listing").get(key[0]).get(key[1]).get(key[2]))
+                value = response.get("listing").get(key[0], {}).get(key[1],{}).get(key[2])
+                if isinstance(value, list):
+                    value = " ".join(value)
         else:
             value = response.get("listing").get(key)
         return value

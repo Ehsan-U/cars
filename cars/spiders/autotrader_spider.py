@@ -30,7 +30,6 @@ class AutoTrader(scrapy.Spider):
             for car in data.get("listings"):
                 url = f"https://www.autotrader.com/cars-for-sale/vehicledetails.xhtml?listingId={car.get('id')}"
                 yield scrapy.Request(url, callback=self.parse_car, meta={"playwright": True})
-                break
             self.page_no +=1
             next_url = self.base_url.format(self.page_no * 25)
             yield scrapy.Request(url=next_url, callback=self.parse, meta={"playwright": True})
