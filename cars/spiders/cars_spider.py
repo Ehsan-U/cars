@@ -124,7 +124,7 @@ class Cars(scrapy.Spider):
             seller_type = data.get("seller_type")
             return seller_type
 
-#
+
 # crawler = CrawlerProcess()
 # crawler.crawl(Cars)
 # crawler.start()
