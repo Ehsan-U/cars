@@ -55,6 +55,7 @@ class AutoTrader(scrapy.Spider):
                 interior=self.get_interior(response),
                 body_style=self.get_bodystyle(response),
                 model=self.get_model(response),
+                make=self.get_make(response),
                 location=self.get_location(response),
                 seller=self.get_seller(response),
                 seller_type=self.get_seller_type(response),
@@ -131,6 +132,11 @@ class AutoTrader(scrapy.Spider):
     def get_model(response):
         model = list(response.get("initialState").get("inventory").values())[0].get("model")
         return model
+
+    @staticmethod
+    def get_make(response):
+        make = list(response.get("initialState").get("inventory").values())[0].get("make")
+        return make
 
     @staticmethod
     def get_location(response):

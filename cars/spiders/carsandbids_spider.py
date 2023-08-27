@@ -78,6 +78,7 @@ class CarsandBids(scrapy.Spider):
         item = dict(
             source='carsandbids.com',
             year=self.get_year(response),
+            make=self.get_value(response, 'Make'),
             model=self.get_value(response, 'Model'),
             description=self.get_description(response),
             price=self.get_price(response),

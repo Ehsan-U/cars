@@ -52,6 +52,7 @@ class Cars(scrapy.Spider):
             interior=self.get_value(response, "interior"),
             body_style=self.get_bodystyle(response),
             model=self.get_model(response),
+            make = '',
             location=self.get_location(response),
             seller=self.get_seller(response),
             seller_type=self.get_seller_type(response),

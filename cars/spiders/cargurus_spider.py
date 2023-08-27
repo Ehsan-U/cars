@@ -49,6 +49,7 @@ class Cargurus(scrapy.Spider):
             interior=self.get_value(response, "localizedInteriorColor"),
             body_style=self.get_value(response, ("autoEntityInfo", "bodyStyle")),
             model=self.get_value(response, "modelName"),
+            make = self.get_value(response, "makeName"),
             location=self.get_value(response, ("seller", "address", "addressLines")),
             seller=self.get_value(response, ("seller", "name")),
             seller_type=self.get_value(response, ("seller", "sellerType")),

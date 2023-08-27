@@ -34,6 +34,7 @@ class BringaTrailer(scrapy.Spider):
             source="bringatrailer.com",
             year=self.get_year(response),
             model=self.get_model(response),
+            make=self.get_make(response),
             description=self.get_description(response),
             price=self.get_price(response),
             auction_end_date=self.get_end_date(response, self.convert_date_string),
@@ -111,6 +112,11 @@ class BringaTrailer(scrapy.Spider):
     def get_model(response):
         model =response.xpath(f"//strong[contains(text(), 'Model')]/following-sibling::text()").get()
         return model
+
+    @staticmethod
+    def get_make(response):
+        make = response.xpath(f"//strong[contains(text(), 'Make')]/following-sibling::text()").get()
+        return make
 
     @staticmethod
     def get_title(response):

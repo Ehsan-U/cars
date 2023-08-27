@@ -40,6 +40,7 @@ class CarItem(scrapy.Item):
     interior = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     body_style = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     model = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
+    make = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     location = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     seller = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
     seller_type = scrapy.Field(input_processor=MapCompose(clean), output_processor=TakeFirst())
