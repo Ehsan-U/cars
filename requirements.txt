@@ -1,0 +1,6 @@
+scrapy
+dateparser
+jsonpath_ng
+scrapy-playwright
+scrapy-zyte-api
+scrapy-impersonate
